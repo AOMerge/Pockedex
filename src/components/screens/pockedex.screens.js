@@ -57,8 +57,7 @@ export default function Pokedex() {
 
   return (
     <SafeAreaView>
-      <Text>Pokedex</Text>
-      <TextInput placeholder="search" />
+      <Text>What pokemon are you looking for?</Text>
       <ListPokemons
         pokemons={pokemons}
         isNext={nextUrl}

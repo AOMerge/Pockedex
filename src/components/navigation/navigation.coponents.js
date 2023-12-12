@@ -3,6 +3,7 @@ import { Image, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import Icon2 from "react-native-vector-icons/Feather";
 import Pokedex from "../screens/pockedex.screens";
 import Favorites from "../screens/favorites.screens";
 import Accound from "../screens/accound.screens";
@@ -28,13 +29,13 @@ export default function TabNavigator() {
           }}
         />
         <Tab.Screen
-          name="Favoritos"
+          name="Menu"
           style={{ backgroundColor: "#fff", color: "#000", top: -15 }}
           component={Favorites}
           options={{
-            tabBarLabel: "Favoritos",
+            tabBarLabel: "Menu",
             tabBarIcon: ({ color, size, focused }) => (
-              <Icon name="heart" color={color} size={size} focused={focused} />
+              <Icon2 name="home" color={color} size={size} focused={focused} />
             ),
             headerTitleStyle: stylesHeader.Text,
             headerStyle: stylesHeader.container,

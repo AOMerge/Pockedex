@@ -1,18 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, SafeAreaView, TextInput } from "react-native";
-import styles from "../../styles/styles";
+import styles from "../../../styles/styles";
+import { Description } from "./description";
+import { Profile } from "./porfile";
+import { Abilities } from "./abilities";
 
-export default function About({ description}) {
-    return (
-      <View style={{ marginTop: 22, height: "100%", marginHorizontal: 20 }}>
-        {description && (
-          <Text style={{ textAlign: "center", fontSize: 20 }}>
-            {description.flavor_text_entries[0].flavor_text
-              .replace(/\n/g, " ")
-              .replace(/\f/g, " ")
-              .replace(/\'/g, "'")}
-          </Text>
-        )}
-      </View>
-    );
+export function About({ pockemon }) {    
+  
+  return (
+    <View
+      style={{
+        marginTop: 22,
+        height: "100%",
+        marginHorizontal: 20,
+      }}
+    >
+      <Description description={pockemon.description} />
+      <Profile height={pockemon.height} weight={pockemon.weight} />
+      <Abilities pockemon={pockemon} />
+    </View>
+  );
 }
