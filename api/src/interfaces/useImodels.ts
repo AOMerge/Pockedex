@@ -1,3 +1,6 @@
+// Date: 19/12/23
+// useImodels.ts
+
 export interface ILike {
   id: number;
   id_pockemon: number;
@@ -74,17 +77,24 @@ export interface ITokenUser {
   token: string;
   user: IUser;
 }
+/**
+ * Represents the login information.
+ */
 export interface ILogin {
   email: string;
   password: string;
 }
-
 export interface IcheckEmail {
   token: string;
 }
 export interface IdelateCheckUser {
   token: string;
 }
+/**
+ * Represents the interface for a delayed user.
+ * @interface
+ * @property {string} id - The id of the user.
+ */
 export interface IdelateUser{
   id: string
 }

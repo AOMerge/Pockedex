@@ -1,12 +1,19 @@
+// Date: 19/12/2023
+// Author: aomerge
+// proyect description: the proyect is a api rest for save and like pockemons, the api working with the api of pockemon and the api of google auth, the tecnologys used in the proyect they are in the readme.md.
 // server.js
+// lribrary
 import express from "express";
 import bodyParser from "body-parser";
-import userRoutes from "./views/router.v1";
-import errorMiddleware  from "./src/middlewere/errorMiddlewere.v1";
-import { sequelize } from "./models/useModel";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
+// router
+import userRoutes from "./views/router.v1";
+// middlewere
+import errorMiddleware  from "./src/middlewere/errorMiddlewere.v1";
+// model
+import { sequelize } from "./models/useModel";
 dotenv.config();
 
 // .env

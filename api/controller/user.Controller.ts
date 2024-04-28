@@ -1,7 +1,7 @@
-// - Date: 15/12/2023
+// - Date: 20/12/2023
 // UserController.js
 // library
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { validate } from "class-validator";
 import { plainToClass } from "class-transformer";
 import passport, { Passport } from "passport";
@@ -16,7 +16,7 @@ import {
   IcheckEmail,
   IdelateUser,
   IdelateCheckUser,
-  IUpdateUser
+  IUpdateUser,
 } from "../src/interfaces/useImodels";
 // models
 import { DataUser } from "../models/dataUser.model";
@@ -26,11 +26,14 @@ import {
   UserDto,
   checkEmailDto,
   deleteDto,
-  checkpassDto,
-  UserUpdateDto,
+  checkpassDto , 
+  userLastNameDto,
+  userFirstNameDto,
+  userUserNameDto,
 } from "../src/middlewere/validation/user.middlewere";
 import { checkEmail } from "../src/middlewere/email/checkemail.middlewere";
-import { debbugMiddlewere } from "../src/middlewere/debbug/debbug.middlewere";
+import { debugMiddleware } from "../src/middlewere/debbug/debbug.middlewere";
+import { validationMiddlewere } from "../src/middlewere/validation/useValidation.middlewere";
 
 // .env
 const JWT_SECRET = process.env.JWT_SECRET || "";
@@ -51,7 +54,7 @@ export class UserController {
   public async geTest(req: Request, res: Response): Promise<Response<IUser>> {
     try {
       return this.gettest(req, res);
-    } catch (error: any ) {
+    } catch (error: any) {
       return error;
     }
   }
@@ -71,7 +74,7 @@ export class UserController {
   }
   /**
    * Verifies the token and saves the user and generates a token.
-   * 
+   *
    * @param req - The request object.
    * @param res - The response object.
    * @returns A promise that resolves to the saved user.
@@ -88,7 +91,7 @@ export class UserController {
   }
   /**
    * Logs in a user.
-   * 
+   *
    * @param req - The request object.
    * @param res - The response object.
    * @returns A promise that resolves to the user data.
@@ -102,7 +105,7 @@ export class UserController {
   }
   /**
    * Updates a user.
-   * 
+   *
    * @param req - The request object.
    * @param res - The response object.
    * @returns A promise that resolves to the updated user.
@@ -115,8 +118,59 @@ export class UserController {
     }
   }
   /**
+   * Updates the email of a user.
+   *
+   * @param req - The request object.
+   * @param res - The response object.
+   * @returns A promise that resolves to the updated user.
+   */
+  public async updateEmail(
+    req: Request,
+    res: Response
+  ): Promise<Response<IUser>> {
+    try {
+      return this.getUpdateEmail(req, res);
+    } catch (error: Error | any) {
+      return error;
+    }
+  }
+  /**
+   * Updates the email check.
+   *
+   * @param req - The request object.
+   * @param res - The response object.
+   * @returns A promise that resolves to the updated user.
+   */
+  public async updateEmailCheck(
+    req: Request,
+    res: Response
+  ): Promise<Response<IUser>> {
+    try {
+      return this.getUpdateEmailCheck(req, res);
+    } catch (error: Error | any) {
+      return error;
+    }
+  }
+  /**
+   * Updates the password for a user.
+   *
+   * @param req - The request object.
+   * @param res - The response object.
+   * @returns A promise that resolves to the updated user.
+   */
+  public async updatePassword(
+    req: Request,
+    res: Response
+  ): Promise<Response<IUser>> {
+    try {
+      return this.getUpdatePassword(req, res);
+    } catch (error: Error | any) {
+      return error;
+    }
+  }
+  /**
    * Deletes a user.
-   * 
+   *
    * @param req - The request object.
    * @param res - The response object.
    * @returns A promise that resolves to the deleted user.
@@ -130,7 +184,7 @@ export class UserController {
   }
   /**
    * Deletes a check.
-   * 
+   *
    * @param req - The request object.
    * @param res - The response object.
    * @returns A promise that resolves to the deleted user.
@@ -147,7 +201,7 @@ export class UserController {
   }
   /**
    * Authenticates the user using Google OAuth.
-   * 
+   *
    * @param req - The request object.
    * @param res - The response object.
    * @returns A promise that resolves to the authenticated user.
@@ -164,7 +218,7 @@ export class UserController {
   }
   /**
    * Handles the callback from Google authentication.
-   * 
+   *
    * @param req - The request object.
    * @param res - The response object.
    * @returns A promise that resolves to the response containing the authenticated user.
@@ -205,7 +259,7 @@ export class UserController {
           email: body.email,
         },
       });
-      await debbugMiddlewere.ifError(dataUser, "El usuario ya existe");
+      await debugMiddleware.ifError(dataUser, "El usuario ya existe");
       // token
       const token = Jwt.sign(body, JWT_SECRET, {
         expiresIn: "15m",
@@ -247,7 +301,8 @@ export class UserController {
         JWT_SECRET
       )) as Jwt.JwtPayload;
       // debbug decode
-      await debbugMiddlewere.ifError(!decode, "error");
+      await debugMiddleware.ifError(!decode, "error");
+      await debugMiddleware.debbug(decode);
 
       //// auth email
       // find email
@@ -257,7 +312,7 @@ export class UserController {
         },
       });
       // debbug dataUserAuth
-      await debbugMiddlewere.ifError(dataUserAuth, "El usuario ya existe");
+      await debugMiddleware.ifError(dataUserAuth, "El usuario ya existe");
 
       //// encriptin password
       const password = await bcrypt.hash(decode.password, 10);
@@ -269,7 +324,7 @@ export class UserController {
         password: password,
       } as DataUser);
       // debbug dataUser
-      await debbugMiddlewere.ifError(!dataUser, {
+      await debugMiddleware.ifError(!dataUser, {
         messenge: "Ocurrio un error al crear el usuario, intenta de nuevo",
       });
       // save user
@@ -280,7 +335,7 @@ export class UserController {
         dataUserId: dataUser.id,
       } as User);
       // debbug user
-      await debbugMiddlewere.ifError(!user, {
+      await debugMiddleware.ifError(!user, {
         messenge: "Ocurrio un error al crear el usuario, intenta de nuevo",
       });
 
@@ -298,7 +353,7 @@ export class UserController {
         }
       );
       // debbug token
-      await debbugMiddlewere.ifError(!token, {
+      await debugMiddleware.ifError(!token, {
         messenge: "Ocurrio un error al crear el token",
       });
 
@@ -335,7 +390,7 @@ export class UserController {
   ): Promise<Response<IUser>> {
     try {
       // request
-      const body: ILogin = req.body as ILogin;
+      const body: ILogin | any = req.body as ILogin;
       const createUserDto = plainToClass(UserDto, body);
       const errors = await validate(createUserDto);
       // debbug Errors
@@ -349,25 +404,29 @@ export class UserController {
         },
       });
       // debbug dataUser
-      await debbugMiddlewere.ifError(!dataUser, "El usuario no existe");
+      await debugMiddleware.ifError(!dataUser, "El usuario no existe");
 
       // compare password
       await bcrypt
         .compare(body.password, dataUser?.password ?? "")
         .then((result) => {
-          return debbugMiddlewere.ifError(!result, "Contraseña incorrecta");
+          return debugMiddleware.ifError(!result, "Contraseña incorrecta");
         });
 
       // generate token
-      const token = Jwt.sign(body, JWT_SECRET, {
-        expiresIn: "20d",
+      const token = Jwt.sign({id: dataUser?.id, email: body.email}, JWT_SECRET, {
+        expiresIn: "20days",
       });
       // send email
       /* await checkEmail(body.email, token).catch((err) => {
         return res.status(400).json(err);
       }); */
       // response
-      return res.status(200).json([{ status: 200, message: "Usuario loggiado correctamente", token }]);
+      return res
+        .status(200)
+        .json([
+          { status: 200, message: "Usuario loggiado correctamente", token },
+        ]);
     } catch (error: Error | any) {
       return res.status(400).json([{ status: 400, message: error.message }]);
     }
@@ -379,30 +438,78 @@ export class UserController {
     try {
       //  request
       const body: IUpdateUser | any = req.body as IUpdateUser;
-      const Autentication : IUpdateUser | any = req.headers.authorization;
-      const createUserDto = plainToClass(UserUpdateDto, body);
-      const createUserDto2 = plainToClass(UserUpdateDto, Autentication);
-      const errors = await validate(createUserDto);
-      // validate
-      if (errors.length > 0) {
-        return res.status(400).json([req.body, errors]);
-      }
-      // token
-      const decode: any = Jwt.decode(Autentication);
-      await debbugMiddlewere.ifError(!decode, "El Token es invalido");
+      const autentication: IUpdateUser | any = req.headers.authorization;
+      const firstName = body.firstName;
+      const lastName = body.lastName;
+      const userName = body.userName;
+      const errorFirstName = await validationMiddlewere.error(
+        userFirstNameDto,
+        body
+      );
+      const errorLastName = await validationMiddlewere.error(
+        userLastNameDto,
+        body
+      );
+      const errorUserName = await validationMiddlewere.error(
+        userUserNameDto,
+        body
+      );
+
+      /// validate
+      // validate body and token
+      if (firstName && firstName.length >= 0 && errorFirstName.length > 0)
+        return debugMiddleware.sendResponse(res, 400, errorFirstName);
+      if (lastName && lastName.length > 0 && errorLastName.length > 0)
+        return debugMiddleware.sendResponse(res, 400, errorLastName);
+      if (userName && userName.length > 0 && errorUserName.length > 0)
+        return debugMiddleware.sendResponse(res, 400, errorUserName);
+      if (!autentication)
+        return debugMiddleware.sendResponse(
+          res,
+          400,
+          "No se encontro el token"
+        );
+      // validate !body
+      if (!body.firstName && !body.lastName && !body.userName)
+        return debugMiddleware.sendResponse(
+          res,
+          400,
+          "No se encontro ningun dato para actualizar"
+        );
+
+      //// auth token      
+      const decode: IUser | Jwt.JwtPayload = (await Jwt.verify(
+        autentication.split(" ")[1],
+        JWT_SECRET
+      )) as Jwt.JwtPayload;
+      // debbug decode      
+      await debugMiddleware.debbug(decode);      
+      await debugMiddleware.ifError(!decode, "El Token es invalido");
       // find user
       const userFind = await User.findOne({
         where: {
-          id: decode.id,
+          dataUserId: decode.id          
         },
       });
-      await debbugMiddlewere.ifError(!userFind, "El usuario no existe");
+      await debugMiddleware.ifError(!userFind, "El usuario no existe");
 
       // update
-      const userUpdt = await User.update({ lastName: body.lastName, firstName: body.firstName, username: body.username }, body);
+      const user = await User.update(
+        {
+          firstName: body.firstName,
+          lastName: body.lastName,
+          username: body.userName,
+        },
+        {
+          where: {
+            dataUserId: decode.id,
+          },
+        });
+
       // response
-      return res.status(200).json("user");
-    } catch (error : Error | any) {
+      return await debugMiddleware.sendResponse(res,200, "Usuario actualizado correctamente")
+      
+    } catch (error: Error | any) {      
       return res.status(400).json([{ status: 400, message: error.message }]);
     }
   }
@@ -412,7 +519,7 @@ export class UserController {
   ): Promise<Response<IUser>> {
     try {
       // request
-      const body = req.body;
+      const body: any = req.body;
       const createUserDto = plainToClass(checkpassDto, body);
       const errors = await validate(createUserDto);
       // validate
@@ -443,8 +550,8 @@ export class UserController {
 
       // response
       return res.status(200).json("h");
-    } catch (error) {
-      return res.status(400).json(error);
+    } catch (error: Error | any) {
+      return res.status(400).json([{ status: 400, message: error.message }]);
     }
   }
   private async getUpdateEmailCheck(
@@ -464,18 +571,19 @@ export class UserController {
       const decode = Jwt.decode(params.token);
       if (!decode) return res.status(400).json("Error");
 
-
-
       // update email
       await DataUser.update({ email: "" }, params);
 
       // response
       return res.status(200).json("h");
-    } catch (error) {
-      return res.status(400).json(error);
+    } catch (error: Error | any) {
+      return res.status(400).json([{ status: 400, message: error.message }]);
     }
   }
-  private async getUpdatePassword( req: Request, res: Response): Promise<Response<IUser>> {
+  private async getUpdatePassword(
+    req: Request,
+    res: Response
+  ): Promise<Response<IUser>> {
     try {
       // request
       const params = req.body;
@@ -494,8 +602,8 @@ export class UserController {
 
       // response
       return res.status(200).json("h");
-    } catch (error) {
-      return res.status(400).json(error);
+    } catch (error: Error | any) {
+      return res.status(400).json([{ status: 400, message: error.message }]);
     }
   }
   private async getdeletecheck(
@@ -544,7 +652,8 @@ export class UserController {
           id: body.id,
         },
       });
-      if (!user) return res.status(200).json("usuario no identificado");
+      // debbug user
+      await debugMiddleware.ifError(!user, "El usuario no existe");
 
       // token
       const token = Jwt.sign(body.id, JWT_SECRET, {
@@ -557,9 +666,13 @@ export class UserController {
       });
 
       // response
-      return res.status(200).json(["Send Mail", token]);
-    } catch (error) {
-      return res.status(400).json(error);
+      return res.status(200).json({
+        status: 200,
+        message: "Enviamos un token de confirmaicon a tu cuenta ",
+        token,
+      });
+    } catch (error: Error | any) {
+      return res.status(400).json([{ status: 400, message: error.message }]);
     }
   }
   private async getAuthGoogle(
@@ -572,8 +685,8 @@ export class UserController {
       passport.authenticate("google", { scope: ["profile", "email"] });
 
       return res.status(200).json(body);
-    } catch (error) {
-      return res.status(400).json(error);
+    } catch (error: Error | any) {
+      return res.status(400).json([{ status: 400, message: error.message }]);
     }
   }
   private async getAuthGoogleCallback(
@@ -595,8 +708,8 @@ export class UserController {
 
       // response
       return res.status(200).json("test");
-    } catch (error) {
-      return res.status(400).json(error);
+    } catch (error: Error | any) {
+      return res.status(400).json([{ status: 400, message: error.message }]);
     }
   }
 }

@@ -1,10 +1,11 @@
-// - Date: 15/12/2023
+// - Date: 19/12/2023
 // UserController.ts
 import { Router } from "express";
 import { UserController } from "../controller/user.Controller";
 import { LikeController } from "../controller/like.controlller";
 import { SaveController } from "../controller/save.controller";
 const router = Router();
+// create controller
 const user = new UserController();
 const like = new LikeController();
 const save = new SaveController();
@@ -19,7 +20,12 @@ router.get("/update/emial/check", (req, res)=>user.update(req, res));
 // post 
 router.post("/register", (req, res) => user.save(req, res));
 router.post("/login", (req, res) => user.login(req, res));
-router.post("/user/update",(req, res)=> user.update(req, res));
+// put
+router.put("/user/update",(req, res)=> user.update(req, res));
+// patch
+router.patch("/user/update/email",(req, res)=> user.updateEmail(req, res));
+router.patch("/user/update/email/auth",(req, res)=> user.updateEmailCheck(req, res));
+router.patch("/user/update/password",(req, res)=> user.updatePassword(req, res));
 // delete
 router.delete("/user/delete",(req, res)=> user.delete(req, res));
 router.delete("/user/delete/auth",(req, res)=> user.deleteCheck(req, res));

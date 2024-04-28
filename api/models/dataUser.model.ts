@@ -1,3 +1,5 @@
+// Date: 15/12/23
+// user.model.ts
 import { Table, Column, Model, DataType } from "sequelize-typescript";
 import { IDataUser } from "../src/interfaces/useInterface.v1";
 
