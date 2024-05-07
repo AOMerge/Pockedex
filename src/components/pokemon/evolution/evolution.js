@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, SafeAreaView, TextInput, Image } from "react-native";
 const apiurl = process.env.EXPO_PUBLIC_API_URL;
-import  { PockemonEvolutionStyle as style } from "../../../styles/styles";
-import { getPokemonDetailsByUrlApi } from "../../../api/get";
+import { PockemonEvolutionStyle as style } from "../../../styles/styles";
+import { getPokemonDetailsByUrlApi } from "../../../api/v1/get";
 
 export function Evolution({ evolution }) {
   const [evolutionChain, setEvolutionChain] = useState(null);
@@ -10,8 +10,8 @@ export function Evolution({ evolution }) {
   useEffect(() => {
     getPockemonEvolutionImage();
   }, []);
-  const getPockemonEvolutionImage = async () => {    
-    if (evolution.chain.evolves_to[0].species.name ) {
+  const getPockemonEvolutionImage = async () => {
+    if (evolution.chain.evolves_to[0].species.name) {
       const evolutionChain = await getPokemonDetailsByUrlApi(
         `${apiurl}/pokemon/${evolution.chain.evolves_to[0].species.name}`
       );
@@ -19,7 +19,7 @@ export function Evolution({ evolution }) {
         evolutionChain.sprites.other["official-artwork"].front_default
       );
     }
-    if( evolution.chain.evolves_to[0].evolves_to[0] ) {
+    if (evolution.chain.evolves_to[0].evolves_to[0]) {
       const evolutionChain2 = await getPokemonDetailsByUrlApi(
         `${apiurl}/pokemon/${evolution.chain.evolves_to[0].evolves_to[0].species.name}`
       );
@@ -27,8 +27,8 @@ export function Evolution({ evolution }) {
         evolutionChain2.sprites.other["official-artwork"].front_default
       );
     }
-  };  
-  
+  };
+
   return (
     <View style={style.container}>
       <View>

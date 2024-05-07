@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Pockedex from "../screens/pockedex.screens";
+import Pockedex from "../../page/v1/pockedex.page.v1";
 import { TouchableOpacity } from "react-native";
-import PockemonScreen from "../screens/pockemon.screens";
+import PockemonScreen from "../../page/v1/pockemon.page.v1";
 import Icon from "react-native-vector-icons/AntDesign";
 import { HeartIcon } from "../pokemon/headerRigth";
 import { useBackgroundColor } from "../../hooks/backgroundColor.hook";
@@ -10,10 +10,8 @@ import { useBackgroundColor } from "../../hooks/backgroundColor.hook";
 const Stack = createStackNavigator();
 
 export function PokedexNavigation() {
-  const { backgroundColor, changeBackgroundColor } =
-    useBackgroundColor("hola");  
+  const { backgroundColor, changeBackgroundColor } = useBackgroundColor("hola");
   const [Heart, setHeart] = useState(false);
-  console.log("b1", backgroundColor);
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -23,7 +21,7 @@ export function PokedexNavigation() {
       />
       <Stack.Screen
         name="Pokemon"
-        component={ PockemonScreen }
+        component={PockemonScreen}
         options={{
           title: "",
           headerStyle: {
@@ -39,4 +37,3 @@ export function PokedexNavigation() {
     </Stack.Navigator>
   );
 }
-

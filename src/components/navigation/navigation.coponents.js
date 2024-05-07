@@ -4,10 +4,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Icon2 from "react-native-vector-icons/Feather";
-import Pokedex from "../screens/pockedex.screens";
-import Favorites from "../screens/favorites.screens";
-import Accound from "../screens/accound.screens";
-import { PokedexNavigation } from "./pockemon.navigation"
+import Favorites from "../../page/v1/favorites.page.v1";
+import Accound from "../../page/v1/accound.page.v1";
+import { PokedexNavigation } from "./pockemon.navigation";
 
 const Tab = createBottomTabNavigator();
 
@@ -18,17 +17,6 @@ export default function TabNavigator() {
     >
       <Tab.Navigator>
         <Tab.Screen
-          name="Pokedex"
-          component={PokedexNavigation}
-          options={{
-            tabBarLabel: "",
-            tabBarIcon: () => renderPokeball(),
-            headerTitleStyle: stylesHeader.Text,
-            headerStyle: stylesHeader.container,
-            headerTitleAlign: "center",
-          }}
-        />
-        <Tab.Screen
           name="Menu"
           style={{ backgroundColor: "#fff", color: "#000", top: -15 }}
           component={Favorites}
@@ -37,6 +25,17 @@ export default function TabNavigator() {
             tabBarIcon: ({ color, size, focused }) => (
               <Icon2 name="home" color={color} size={size} focused={focused} />
             ),
+            headerTitleStyle: stylesHeader.Text,
+            headerStyle: stylesHeader.container,
+            headerTitleAlign: "center",
+          }}
+        />
+        <Tab.Screen
+          name="Pokedex"
+          component={PokedexNavigation}
+          options={{
+            tabBarLabel: "",
+            tabBarIcon: () => renderPokeball(),
             headerTitleStyle: stylesHeader.Text,
             headerStyle: stylesHeader.container,
             headerTitleAlign: "center",
@@ -78,10 +77,10 @@ const stylesHeader = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.5,
     shadowRadius: 3,
-    elevation: 5
+    elevation: 5,
   },
   Text: {
-    fontSize: 20,    
+    fontSize: 20,
     color: "#000",
   },
 });

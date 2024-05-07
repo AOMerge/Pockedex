@@ -1,36 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { View, ScrollView } from "react-native";
-import { getPokemonDetailsByUrlApi } from "../../api/get";
+import { getPokemonDetailsByUrlApi } from "../../api/v1/get";
 import { colors, PockemonButtonStyle } from "../../styles/styles";
-import { About } from "../pokemon/about/about";
-import { Stats } from "../pokemon/stats/stats";
-import { Evolution } from "../pokemon/evolution/evolution";
-import { Header } from "../pokemon/header/header";
-import { Body } from "../pokemon/body/body";
-import { NavPockemon } from "../pokemon/nav/navigation";
-import { Button } from "../pokemon/button/button";
-import { BodyNavigation } from "../pokemon/body/bodyNavigation";
-import { LoadingPokemon } from "../pokemon/loadingPokemon";
+import { About } from "../../components/pokemon/about/about";
+import { Stats } from "../../components/pokemon/stats/stats";
+import { Evolution } from "../../components/pokemon/evolution/evolution";
+import { Header } from "../../components/pokemon/header/header";
+import { Body } from "../../components/pokemon/body/body";
+import { NavPockemon } from "../../components/pokemon/nav/navigation";
+import { Button } from "../../components/pokemon/button/button";
+import { BodyNavigation } from "../../components/pokemon/body/bodyNavigation";
+//import { LoadingPokemon } from "../../components/pokemon/loadingPokemon";
+import { LoadingPokemon } from "@components/pokemon/loadingPokemon";  // type: ignore 
 import { useBackgroundColor } from "../../hooks/backgroundColor.hook";
 
 const apiurl = process.env.EXPO_PUBLIC_API_URL;
 
-export default function Pockemon(props, { route, changeBackgroundColor, backgroundColor }) {
+
+
+export default function Pockemon(
+  props,
+  { route, changeBackgroundColor, backgroundColor }
+) {
   const [PockemonPages, setPockemonPages] = useState(1);
-  const [pockemon, setPockemon] = useState(null);
-  const firstItemType = pockemon?.type[0];
-  console.log(route);
-  console.log(props.route.params.id);
+  const [pockemon, setPockemon]: any[] = useState(null);
+  //const firstItemType = pockemon?.type[0];
 
   const id = props.route.params.id;
   useEffect(() => {
     getPockemon();
     /* changeBackgroundColor(colors.typesPokemon[firstItemType]); */
   }, []);
-  console.log("h3",changeBackgroundColor)
-  const backgroundColor2 = colors.typesPokemon[firstItemType];
-  console.log("h2", backgroundColor2);
-  console.log("h1", backgroundColor);
 
   const getPockemon = async () => {
     const response = await getPokemonDetailsByUrlApi(`${apiurl}/pokemon/${id}`);
@@ -96,7 +96,7 @@ export default function Pockemon(props, { route, changeBackgroundColor, backgrou
     <View>
       {pockemon ? (
         <ScrollView>
-          <View style={[pockemon.type[0] && { backgroundColor: "red" }]}>
+          <View style={[pockemon?.type && pockemon.type[0] && { backgroundColor: "red" }]}>
             <Header pockemon={pockemon} />
             <Body>
               <NavPockemon>
