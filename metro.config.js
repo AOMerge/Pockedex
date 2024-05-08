@@ -7,6 +7,9 @@ config.resolver = {
   ...config.resolver,
   extraNodeModules: {
     "@components": "./src/components",
+    "@hooks": "./src/hooks",
+    "@navigation": "./src/navigation",
+    "Pages": "./src/page",
     // Añade más alias según sea necesario
   },
 };

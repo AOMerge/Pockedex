@@ -17,7 +17,10 @@
     "jsx": "react-native",
     "paths": {
       "~/*": ["./src/*"],
-      "@components/*": ["src/components/*"]
+      "@components/*": ["./src/components/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@navigation/*": ["./src/navigation/*"],
+      "@pages": ["./src/page"]
     }
   },
   "include": ["src"],
