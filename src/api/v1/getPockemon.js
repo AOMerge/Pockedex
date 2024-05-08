@@ -1,4 +1,4 @@
-export const getPockemon = async () => {
+const getPockemon = async () => {
   const response = await getPokemonDetailsByUrlApi(`${apiurl}/pokemon/${id}`);
   const responseSpecies = await getPokemonDetailsByUrlApi(response.species.url);
   const responseDescription = await getPokemonDetailsByUrlApi(

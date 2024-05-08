@@ -31,8 +31,3 @@ export async function getPokemonDetailsByUrlApi(url) {
     throw error; // Propaga el error.
   }
 }
-
-
-class GetPettion {
-  
-}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; // eslint-disable-line no-unused-vars
 import { createStackNavigator } from "@react-navigation/stack";
 import Pockedex from "../../page/v1/pockedex.page.v1";
 import { TouchableOpacity } from "react-native";
