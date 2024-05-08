@@ -60,6 +60,7 @@ export default function TabNavigator() {
     </NavigationContainer>
   );
 }
+
 function renderPokeball() {
   return (
     <Image
