@@ -4,7 +4,7 @@ import { Body } from "./body/body";
 import { NavPockemon } from "./nav/navigation";
 import { Button } from "./button/button";
 import { BodyNavigation } from "./body/bodyNavigation";
-import { About } from "./about/about";
+import AboutPokemon from "./about/about";
 import { Stats } from "./stats/stats";
 import { Evolution } from "./evolution/evolution";
 import { PockemonButtonStyle } from "~/styles/styles";
@@ -82,7 +82,10 @@ export default class PokemonComponent implements component {
             </Text>
           ))}
         </View>
-        <Image source={{ uri: pockemon.image }} style={HeaderPokemon.image} />
+        {
+          pockemon.image &&
+          <Image source={{ uri: pockemon.image }} style={HeaderPokemon.image} />
+        }
       </View>
     );
   }
@@ -156,18 +159,20 @@ export default class PokemonComponent implements component {
     pockemon,
     PockemonPages,
   }: PokemonComponentProps): ReactElement {
+    const About = new AboutPokemon();
+
     return (
       <BodyNavigation>
         {(() => {
           switch (PockemonPages) {
             case 1:
-              return <About pockemon={pockemon} />;
+              return <About.GetAbout pockemon={pockemon} />;
             case 2:
               return <Stats stats={pockemon.stats} />;
             case 3:
               return <Evolution evolution={pockemon.evolution} />;
             default:
-              return <About pockemon={pockemon} />;
+              return <About.GetAbout pockemon={pockemon} />;
           }
         })()}
       </BodyNavigation>
