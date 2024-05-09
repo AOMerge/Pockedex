@@ -8,8 +8,8 @@ import {
   TextInput,
 } from "react-native";
 import { getPokemonsApi, getPokemonDetailsByUrlApi } from "../../api/v1/get";
-//import ListPokemons from "../lists/list-pockemons.components";
 import ListPokemons from "../../components/lists/list-pockemons.components";
+import getHTTP from "~/api/v1/getHTTP";
 
 export default function Pokedex() {
   const [pokemons, setPokemons] = useState(null);
@@ -17,7 +17,9 @@ export default function Pokedex() {
   const [afterUrl, setAfterUrl] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
 
-  const fetchPokemons = async () => {
+  const pokedex = new getHTTP();
+
+/*   const fetchPokemons = async () => {
     setIsFetching(true);
     const response = await getPokemonsApi(nextUrl);
     if (!response || !response.results) {
@@ -49,10 +51,15 @@ export default function Pokedex() {
     setNextUrl(response.next);
     setAfterUrl(response.previous); // should be setNextUrl(response.next)
     setIsFetching(false);
-  };
+  }; */
 
   useEffect(() => {
-    fetchPokemons();
+    pokedex.getAllDataPokemon(nextUrl).then((res: any) => {
+      setPokemons(res.pokemonsArray);
+      setNextUrl(res.response.next);
+      setAfterUrl(res.response.previous);
+    });
+    //fetchPokemons();
   }, []);
 
   return (
@@ -60,9 +67,8 @@ export default function Pokedex() {
       <Text>What pokemon are you looking for?</Text>
       <ListPokemons
         pokemons={pokemons}
-        isNext={nextUrl}
-        isloading={fetchPokemons}
-        isAfter={afterUrl}
+        nextUrl={nextUrl}        
+        afterUrl={afterUrl}
       />
     </SafeAreaView>
   );
