@@ -32,7 +32,7 @@ export default function ListPokemons({ pokemons, nextUrl, afterUrl }: any) {
       onEndReached={nextUrl ? nextUrl : () => {}}
       onEndReachedThreshold={5}
       // Remove the scrollToIndex prop
-      // scrollToIndex={afterUrl}
+      scrollToIndex={afterUrl}
       ListFooterComponent={
         nextUrl && (
           <ActivityIndicator
