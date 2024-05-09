@@ -9,7 +9,7 @@ config.resolver = {
     "@components": "./src/components",
     "@hooks": "./src/hooks",
     "@navigation": "./src/navigation",
-    "Pages": "./src/page",
+    "page": "./src/page",
     // Añade más alias según sea necesario
   },
 };
