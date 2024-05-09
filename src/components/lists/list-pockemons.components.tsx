@@ -19,7 +19,7 @@ import {
  * @param {number} props.isAfter - The index of the item to scroll to.
  * @returns {JSX.Element} - The rendered component.
  */
-export default function ListPokemons({ pokemons, isloading ,isNext, isAfter }) {    
+export default function ListPokemons({ pokemons, nextUrl, afterUrl }: any) {
   return (
     <FlatList
       data={pokemons}
@@ -29,13 +29,14 @@ export default function ListPokemons({ pokemons, isloading ,isNext, isAfter }) {
       numColumns={2}
       keyExtractor={(item) => item.id.toString()}
       showsVerticalScrollIndicator={false}
-      onEndReached={isNext && isloading}
+      onEndReached={nextUrl ? nextUrl : () => {}}
       onEndReachedThreshold={5}
-      scrollToIndex={isAfter}
+      // Remove the scrollToIndex prop
+      // scrollToIndex={afterUrl}
       ListFooterComponent={
-        isNext && (
+        nextUrl && (
           <ActivityIndicator
-            size="medium"
+            size="large"
             style={styles.spinner}
             color="#AEAEAE"
           />
@@ -51,7 +52,7 @@ export default function ListPokemons({ pokemons, isloading ,isNext, isAfter }) {
  * @param {Object} props.item - The Pokemon object to render.
  * @returns {JSX.Element} - The rendered component.
  */
-const Pockecard = React.memo( ({ item }) => {
+const Pockecard = React.memo( ({ item }: any) => {
   // Extraer el tipo del primer objeto o establecer a null si el array está vacío.
   const firstItemType = item?.type;
   const navigation = useNavigation();

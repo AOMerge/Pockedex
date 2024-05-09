@@ -7,23 +7,21 @@ import Icon2 from "react-native-vector-icons/Feather";
 import Favorites from "../../page/v1/favorites.page.v1";
 import Accound from "../../page/v1/accound.page.v1";
 import { PokedexNavigation } from "./pockemon.navigation";
+const ImgPokebol = require( "../../assets/pokeball.png");
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
   return (
-    <NavigationContainer
-      style={{ backgroundColor: "red", height: "200px", color: "#000" }}
-    >
+    <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen
           name="Menu"
-          style={{ backgroundColor: "#fff", color: "#000", top: -15 }}
           component={Favorites}
           options={{
             tabBarLabel: "Menu",
-            tabBarIcon: ({ color, size, focused }) => (
-              <Icon2 name="home" color={color} size={size} focused={focused} />
+            tabBarIcon: ({ color, size }) => (
+              <Icon2 name="home" color={color} size={size} />
             ),
             headerTitleStyle: stylesHeader.Text,
             headerStyle: stylesHeader.container,
@@ -35,7 +33,12 @@ export default function TabNavigator() {
           component={PokedexNavigation}
           options={{
             tabBarLabel: "",
-            tabBarIcon: () => renderPokeball(),
+            tabBarIcon: () => (
+              <Image
+                source={ImgPokebol && ImgPokebol}
+                style={{ width: 60, height: 60, top: -7 }}
+              />
+            ),
             headerTitleStyle: stylesHeader.Text,
             headerStyle: stylesHeader.container,
             headerTitleAlign: "center",
@@ -43,7 +46,6 @@ export default function TabNavigator() {
         />
         <Tab.Screen
           name="Profile"
-          style={{ backgroundColor: "#fff", color: "#000" }}
           component={Accound}
           options={{
             tabBarLabel: "user",
@@ -58,15 +60,6 @@ export default function TabNavigator() {
         />
       </Tab.Navigator>
     </NavigationContainer>
-  );
-}
-
-function renderPokeball() {
-  return (
-    <Image
-      source={require("../../assets/pokeball.png")}
-      style={{ width: 60, height: 60, top: -7 }}
-    />
   );
 }
 // generate shadow
