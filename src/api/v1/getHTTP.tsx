@@ -8,6 +8,29 @@ import {
 import { getPokemonDetailsByUrlApi } from "./get";
 
 export default class getHTTP implements HTTP {
+  private apiurl: string | undefined = process.env.EXPO_PUBLIC_API_URL;
+
+  /**this function is used to get the list of pokemons from the API
+   *
+   * @param url: String
+   * @returns
+   */
+  getAllDataPokemon(url: string | undefined | null)  {
+    return this.AllDataPokemon(url);
+  }
+
+  /**this function is used to get the details of a specific pokemon
+   *
+   * @param evolution: Array
+   * @param setEvolutionChain: function
+   * @param setEvolutionChain2: function
+   * @param apiurl: String
+   * @returns Array
+   */
+  getPockemonEvolutionImage(evolution: any, apiurl: any) {
+    return this.PockemonEvolutionImage(evolution, apiurl);
+  }
+
   /**this function is used to get the list of pokemons from the API
    *
    * @param url: String
@@ -28,6 +51,55 @@ export default class getHTTP implements HTTP {
     id: number
   ): Promise<PokemonDetails> {
     return this.Pockemon(apiurl, id);
+  }
+
+  private async getPokemonsApi(enpontUrl: string | undefined| null) {
+    try {
+      const result = await fetch(
+        enpontUrl || `${this.apiurl}/pokemon?limit=${60}&offset=0`
+      )
+        .then((response) => response.json())
+        .then((json) => {
+          return json;
+        })
+        .catch((error) => {
+          return error;
+        });
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async AllDataPokemon(URL: string | undefined | null) {
+    const response = await this.getPokemonsApi(URL);
+    if (!response || !response.results) return console.error("Error fetching pokemon list:", response?.error);
+    const pokemonsArray = await Promise.all(
+      response.results.map(async (pokemon: any) => {
+        const pokemonDetails = await this.getPokemonDetailsByUrlApi(pokemon.url);
+        return {
+          id: pokemonDetails.id,
+          name: pokemonDetails.name,
+          type: pokemonDetails.types[0].type.name,
+          order: pokemonDetails.order,
+          image: pokemonDetails.sprites.other["official-artwork"].front_default,
+        };
+      })
+    );
+    const updatePokemonList = (prevData:  any) => {
+      if (!Array.isArray(prevData)) {
+        prevData = [];
+      }
+      const dataWithUniqueKeys: any = new Map(
+        prevData.map((item: any) => [item.id, item])
+      );
+      pokemonsArray.forEach((item) => dataWithUniqueKeys.set(item.id, item));
+      return [...dataWithUniqueKeys.values()];
+    };
+    response.next
+    response.previous
+
+    return { pokemonsArray, updatePokemonList, response };
   }
 
   /**this function is used to get the list of pokemons from the API
@@ -159,5 +231,18 @@ export default class getHTTP implements HTTP {
     };
 
     return data;
+  }
+
+  private async PockemonEvolutionImage(
+    evolution: string | any,
+    apiurl: string | undefined
+  ) {
+    if (evolution) {
+      const evolutionChain = await this.getPokemonDetailsByUrlApi(
+        `${apiurl}/pokemon/${evolution}`
+      );
+      return evolutionChain.sprites.other["official-artwork"].front_default;
+    }
+    return null;
   }
 }

@@ -1,39 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import getHTTP from "~/api/v1/getHTTP";
 
-// Custom Hook
-export function useGet(url: string) {
-  const [dataGet, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Función para refrescar los datos
-  const GetFetchData = useCallback(() => {
-    // Reiniciar el estado
-    setLoading(true);
-    setError(null);
-
-    fetch(url)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setData(data.result || data.error || data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error);
-        setLoading(false);
-      });
-  }, [url]);
-
-  useEffect(() => {
-    GetFetchData();
-  }, [GetFetchData]);
-
-  return { dataGet, loading, error, GetFetchData };
-}
-
 export default class usePokemonGet {
     /**
      * Hook to get the data of a pokemon
@@ -61,5 +28,84 @@ export default class usePokemonGet {
     }, []);
 
     return { pockemon, PockemonPages, setPockemonPages };
+  }
+  /**
+   * this hook is used to get the image of the pokemon evolution
+   * @param evolution 
+   * @param apiurl 
+   * @returns 
+   */
+  static usePockemonEvolutionImage(evolution: any, apiurl: any) {
+    const [evolutionChain, setEvolutionChain] = useState(null);
+    const [evolutionChain2, setEvolutionChain2] = useState(null);
+
+    const evolutionChainImage = new getHTTP();
+
+    useEffect(() => {
+      evolutionChainImage.getPockemonEvolutionImage(
+        evolution.chain.evolves_to[0].species.name,
+        apiurl
+      ).then((res) => {
+        setEvolutionChain(res);
+      });
+
+      evolutionChainImage.getPockemonEvolutionImage(
+        evolution.chain.evolves_to[0].evolves_to[0].species.name,
+        apiurl
+      ).then((res) => {
+        setEvolutionChain2(res);
+      });
+    }, []);
+
+    return { evolutionChain, evolutionChain2 };
+  }
+
+  static usePokemonList() {
+    const [pokemons, setPokemons] = useState(null);
+    const [nextUrl, setNextUrl] = useState(null);
+    const [afterUrl, setAfterUrl] = useState(null);
+    const [isFetching, setIsFetching] = useState(false);
+
+    const fetchPokemons = async () => {
+      setIsFetching(true);
+      const response = await getPokemonsApi(nextUrl);
+      if (!response || !response.results) {
+        // handle error here
+        return console.error("Error fetching pokemon list:", response?.error);
+      }
+      const pokemonsArray = await Promise.all(
+        response.results.map(async (pokemon) => {
+          const pokemonDetails = await getPokemonDetailsByUrlApi(pokemon.url);
+          return {
+            id: pokemonDetails.id,
+            name: pokemonDetails.name,
+            type: pokemonDetails.types[0].type.name,
+            order: pokemonDetails.order,
+            image:
+              pokemonDetails.sprites.other["official-artwork"].front_default,
+          };
+        })
+      );
+      setPokemons((prevData) => {
+        if (!Array.isArray(prevData)) {
+          prevData = [];
+        }
+        const dataWithUniqueKeys = new Map(
+          prevData.map((item) => [item.id, item])
+        );
+        pokemonsArray.forEach((item) => dataWithUniqueKeys.set(item.id, item));
+        return [...dataWithUniqueKeys.values()];
+      });
+      setNextUrl(response.next);
+      setAfterUrl(response.previous); // should be setNextUrl(response.next)
+      setIsFetching(false);
+    };
+
+    useEffect(() => {
+      fetchPokemons();
+    }, []);
+
+    return { pokemons, nextUrl, afterUrl, isFetching, fetchPokemons };
+
   }
 }

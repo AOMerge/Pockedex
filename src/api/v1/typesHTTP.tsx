@@ -17,6 +17,8 @@ export interface PokemonDetails {
 export interface HTTP {
   getPokemonDetailsByUrlApi(url: string): any;
   getPockemon(apiurl: string | undefined, id: number): any;
+  getPockemonEvolutionImage(evolution: any, setEvolutionChain: any, setEvolutionChain2: any, apiurl: any): any;
+  getAllDataPokemon(url: string | undefined): any;
 }
 
 export type ResponsePokemon = {
